@@ -42,7 +42,7 @@ public class TradingController {
             redirectAttributes.addFlashAttribute("errorMessage", result);
         }
         
-        return "redirect:/trading";
+        return "redirect:/transactions";
     }
 
     @PostMapping("/sell")
@@ -58,6 +58,6 @@ public class TradingController {
             redirectAttributes.addFlashAttribute("errorMessage", result);
         }
         
-        return "redirect:/trading";
+        return "redirect:/transactions";
     }
 }
