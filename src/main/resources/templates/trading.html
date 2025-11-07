@@ -7,6 +7,11 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}">
     <style>
         body { padding-top: 70px; }
+        .action-button {
+            height: 150px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -47,63 +52,101 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-success text-white">
-                        <h5>Buy Stock</h5>
-                    </div>
-                    <div class="card-body">
-                        <form th:action="@{/trading/buy}" method="post">
-                            <div class="mb-3">
-                                <label for="buySymbol" class="form-label">Stock Symbol</label>
-                                <select class="form-select" id="buySymbol" name="symbol" required>
-                                    <option value="">Select a stock</option>
-                                    <option th:each="stock : ${stocks}" 
-                                            th:value="${stock.symbol}" 
-                                            th:text="${stock.symbol} + ' - ' + ${stock.companyName} + ' ($' + ${#numbers.formatDecimal(stock.currentPrice, 1, 2)} + ')'">
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="buyQuantity" class="form-label">Quantity</label>
-                                <input type="number" class="form-control" id="buyQuantity" name="quantity" min="1" required>
-                            </div>
-                            <button type="submit" class="btn btn-success w-100">Buy</button>
-                        </form>
-                    </div>
+        <!-- Action Selection -->
+        <div id="actionSelection">
+            <h4 class="mb-3 text-center">Choose Action</h4>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <button class="btn btn-success w-100 action-button" onclick="showBuyForm()">
+                        BUY STOCK
+                    </button>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <button class="btn btn-danger w-100 action-button" onclick="showSellForm()">
+                        SELL STOCK
+                    </button>
                 </div>
             </div>
+        </div>
 
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-danger text-white">
-                        <h5>Sell Stock</h5>
-                    </div>
-                    <div class="card-body">
-                        <form th:action="@{/trading/sell}" method="post">
-                            <div class="mb-3">
-                                <label for="sellSymbol" class="form-label">Stock Symbol</label>
-                                <select class="form-select" id="sellSymbol" name="symbol" required>
-                                    <option value="">Select a stock</option>
-                                    <option th:each="stock : ${stocks}" 
-                                            th:value="${stock.symbol}" 
-                                            th:text="${stock.symbol} + ' - ' + ${stock.companyName} + ' ($' + ${#numbers.formatDecimal(stock.currentPrice, 1, 2)} + ')'">
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="sellQuantity" class="form-label">Quantity</label>
-                                <input type="number" class="form-control" id="sellQuantity" name="quantity" min="1" required>
-                            </div>
-                            <button type="submit" class="btn btn-danger w-100">Sell</button>
-                        </form>
-                    </div>
+        <!-- Buy Form -->
+        <div id="buyForm" style="display: none;">
+            <div class="card">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Buy Stock</h5>
+                    <button class="btn btn-light btn-sm" onclick="showActionSelection()">Back</button>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/trading/buy}" method="post">
+                        <div class="mb-3">
+                            <label for="buySymbol" class="form-label">Stock Symbol</label>
+                            <select class="form-select" id="buySymbol" name="symbol" required>
+                                <option value="">Select a stock</option>
+                                <option th:each="stock : ${stocks}" 
+                                        th:value="${stock.symbol}" 
+                                        th:text="${stock.symbol} + ' - ' + ${stock.companyName} + ' ($' + ${#numbers.formatDecimal(stock.currentPrice, 1, 2)} + ')'">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="buyQuantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="buyQuantity" name="quantity" min="1" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Confirm Buy</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sell Form -->
+        <div id="sellForm" style="display: none;">
+            <div class="card">
+                <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Sell Stock</h5>
+                    <button class="btn btn-light btn-sm" onclick="showActionSelection()">Back</button>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/trading/sell}" method="post">
+                        <div class="mb-3">
+                            <label for="sellSymbol" class="form-label">Stock Symbol</label>
+                            <select class="form-select" id="sellSymbol" name="symbol" required>
+                                <option value="">Select a stock</option>
+                                <option th:each="stock : ${stocks}" 
+                                        th:value="${stock.symbol}" 
+                                        th:text="${stock.symbol} + ' - ' + ${stock.companyName} + ' ($' + ${#numbers.formatDecimal(stock.currentPrice, 1, 2)} + ')'">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sellQuantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="sellQuantity" name="quantity" min="1" required>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">Confirm Sell</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
     <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <script>
+        function showBuyForm() {
+            document.getElementById('actionSelection').style.display = 'none';
+            document.getElementById('buyForm').style.display = 'block';
+            document.getElementById('sellForm').style.display = 'none';
+        }
+
+        function showSellForm() {
+            document.getElementById('actionSelection').style.display = 'none';
+            document.getElementById('buyForm').style.display = 'none';
+            document.getElementById('sellForm').style.display = 'block';
+        }
+
+        function showActionSelection() {
+            document.getElementById('actionSelection').style.display = 'block';
+            document.getElementById('buyForm').style.display = 'none';
+            document.getElementById('sellForm').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
