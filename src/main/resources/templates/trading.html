@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}">
+    <style>
+        body { padding-top: 70px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Stock Trading App</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="/stocks">Stocks</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/trading">Trading</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/portfolio">Portfolio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/transactions">Transactions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/profit-loss">Profit/Loss</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="mb-4">Trading</h2>
+        
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5>Account Balance: $<span th:text="${#numbers.formatDecimal(account.cashBalance, 1, 2)}"></span></h5>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5>Buy Stock</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/trading/buy}" method="post">
+                            <div class="mb-3">
+                                <label for="buySymbol" class="form-label">Stock Symbol</label>
+                                <select class="form-select" id="buySymbol" name="symbol" required>
+                                    <option value="">Select a stock</option>
+                                    <option th:each="stock : ${stocks}" 
+                                            th:value="${stock.symbol}" 
+                                            th:text="${stock.symbol} + ' - ' + ${stock.companyName} + ' ($' + ${#numbers.formatDecimal(stock.currentPrice, 1, 2)} + ')'">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="buyQuantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="buyQuantity" name="quantity" min="1" required>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Buy</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h5>Sell Stock</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/trading/sell}" method="post">
+                            <div class="mb-3">
+                                <label for="sellSymbol" class="form-label">Stock Symbol</label>
+                                <select class="form-select" id="sellSymbol" name="symbol" required>
+                                    <option value="">Select a stock</option>
+                                    <option th:each="stock : ${stocks}" 
+                                            th:value="${stock.symbol}" 
+                                            th:text="${stock.symbol} + ' - ' + ${stock.companyName} + ' ($' + ${#numbers.formatDecimal(stock.currentPrice, 1, 2)} + ')'">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sellQuantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="sellQuantity" name="quantity" min="1" required>
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100">Sell</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

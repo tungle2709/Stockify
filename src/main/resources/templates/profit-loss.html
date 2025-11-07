@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit & Loss</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}">
+    <style>
+        body { padding-top: 70px; }
+        .positive { color: #28a745; }
+        .negative { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Stock Trading App</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="/stocks">Stocks</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/trading">Trading</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/portfolio">Portfolio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/transactions">Transactions</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/profit-loss">Profit/Loss</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="mb-4">Profit & Loss Dashboard</h2>
+
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h6 class="card-subtitle mb-2 text-muted">Total Invested</h6>
+                        <h4>$<span th:text="${#numbers.formatDecimal(account.totalInvested, 1, 2)}"></span></h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h6 class="card-subtitle mb-2 text-muted">Current Portfolio Value</h6>
+                        <h4>$<span th:text="${#numbers.formatDecimal(account.currentPortfolioValue, 1, 2)}"></span></h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h6 class="card-subtitle mb-2 text-muted">Total Gain/Loss</h6>
+                        <h4 th:classappend="${account.totalGainLoss >= 0} ? 'positive' : 'negative'">
+                            <span th:text="${account.totalGainLoss >= 0} ? '+' : ''"></span>
+                            $<span th:text="${#numbers.formatDecimal(account.totalGainLoss, 1, 2)}"></span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h6 class="card-subtitle mb-2 text-muted">Return %</h6>
+                        <h4 th:classappend="${account.gainLossPercentage >= 0} ? 'positive' : 'negative'">
+                            <span th:text="${account.gainLossPercentage >= 0} ? '+' : ''"></span>
+                            <span th:text="${#numbers.formatDecimal(account.gainLossPercentage, 1, 2)}"></span>%
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Performance by Stock</h5>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Quantity</th>
+                            <th>Invested</th>
+                            <th>Current Value</th>
+                            <th>Gain/Loss</th>
+                            <th>Return %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${portfolioItems}">
+                            <td><strong th:text="${item.stockSymbol}"></strong></td>
+                            <td th:text="${item.quantity}"></td>
+                            <td>$<span th:text="${#numbers.formatDecimal(item.averagePurchasePrice.multiply(T(java.math.BigDecimal).valueOf(item.quantity)), 1, 2)}"></span></td>
+                            <td>$<span th:text="${#numbers.formatDecimal(item.currentValue, 1, 2)}"></span></td>
+                            <td th:classappend="${item.totalGainLoss >= 0} ? 'positive' : 'negative'">
+                                <span th:text="${item.totalGainLoss >= 0} ? '+' : ''"></span>
+                                $<span th:text="${#numbers.formatDecimal(item.totalGainLoss, 1, 2)}"></span>
+                            </td>
+                            <td th:classappend="${item.gainLossPercentage >= 0} ? 'positive' : 'negative'">
+                                <span th:text="${item.gainLossPercentage >= 0} ? '+' : ''"></span>
+                                <span th:text="${#numbers.formatDecimal(item.gainLossPercentage, 1, 2)}"></span>%
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(portfolioItems)}">
+                            <td colspan="6" class="text-center">No holdings yet. Start trading to see your performance!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
