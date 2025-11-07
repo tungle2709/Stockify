@@ -92,7 +92,7 @@
                         <tr th:each="item : ${portfolioItems}">
                             <td><strong th:text="${item.stockSymbol}"></strong></td>
                             <td th:text="${item.quantity}"></td>
-                            <td>$<span th:text="${#numbers.formatDecimal(item.averagePurchasePrice.multiply(T(java.math.BigDecimal).valueOf(item.quantity)), 1, 2)}"></span></td>
+                            <td>$<span th:text="${#numbers.formatDecimal(item.averagePurchasePrice * item.quantity, 1, 2)}"></span></td>
                             <td>$<span th:text="${#numbers.formatDecimal(item.currentValue, 1, 2)}"></span></td>
                             <td th:classappend="${item.totalGainLoss >= 0} ? 'positive' : 'negative'">
                                 <span th:text="${item.totalGainLoss >= 0} ? '+' : ''"></span>
