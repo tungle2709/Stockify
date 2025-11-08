@@ -10,3 +10,4 @@ public class StockTradingApplication {
         SpringApplication.run(StockTradingApplication.class, args);
     }
 }
+
