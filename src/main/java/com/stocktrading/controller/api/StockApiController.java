@@ -44,4 +44,14 @@ public class StockApiController {
         stockService.updateAllStockPrices();
         return ResponseEntity.ok("Stock prices updated successfully");
     }
+
+    @DeleteMapping("/{symbol}")
+    public ResponseEntity<String> deleteStock(@PathVariable String symbol) {
+        boolean deleted = stockService.deleteStock(symbol);
+        if (deleted) {
+            return ResponseEntity.ok("Stock deleted successfully");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

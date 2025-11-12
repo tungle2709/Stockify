@@ -102,4 +102,13 @@ public class StockService {
             updateStockPrice(stock.getSymbol());
         }
     }
+
+    public boolean deleteStock(String symbol) {
+        Optional<Stock> stock = stockRepository.findBySymbol(symbol);
+        if (stock.isPresent()) {
+            stockRepository.delete(stock.get());
+            return true;
+        }
+        return false;
+    }
 }
