@@ -1,18 +1,11 @@
 package com.stocktrading.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transactions")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Transaction {
     
     @Id
@@ -40,6 +33,8 @@ public class Transaction {
     
     private String status;
     
+    public Transaction() {}
+    
     public Transaction(String stockSymbol, TransactionType type, Integer quantity, 
                       BigDecimal pricePerShare, BigDecimal totalAmount) {
         this.stockSymbol = stockSymbol;
@@ -50,4 +45,21 @@ public class Transaction {
         this.transactionDate = LocalDateTime.now();
         this.status = "COMPLETED";
     }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getStockSymbol() { return stockSymbol; }
+    public void setStockSymbol(String stockSymbol) { this.stockSymbol = stockSymbol; }
+    public TransactionType getType() { return type; }
+    public void setType(TransactionType type) { this.type = type; }
+    public Integer getQuantity() { return quantity; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity; }
+    public BigDecimal getPricePerShare() { return pricePerShare; }
+    public void setPricePerShare(BigDecimal pricePerShare) { this.pricePerShare = pricePerShare; }
+    public BigDecimal getTotalAmount() { return totalAmount; }
+    public void setTotalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; }
+    public LocalDateTime getTransactionDate() { return transactionDate; }
+    public void setTransactionDate(LocalDateTime transactionDate) { this.transactionDate = transactionDate; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }
