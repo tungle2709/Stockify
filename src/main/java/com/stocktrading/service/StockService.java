@@ -52,6 +52,32 @@ public class StockService {
         }
     }
 
+    public Stock addStock(String symbol) {
+        // Check if stock already exists
+        Optional<Stock> existingStock = stockRepository.findBySymbol(symbol);
+        if (existingStock.isPresent()) {
+            updateStockPrice(symbol);
+            return existingStock.get();
+        }
+
+        // Create new stock with real-time data
+        BigDecimal currentPrice = finnhubService.getCurrentPrice(symbol);
+        if (currentPrice == null) {
+            return null; // Stock not found
+        }
+
+        Stock newStock = new Stock();
+        newStock.setSymbol(symbol);
+        newStock.setCompanyName(symbol + " Inc."); // Simplified company name
+        newStock.setCurrentPrice(currentPrice);
+        newStock.setPreviousClose(currentPrice);
+        newStock.setChangePercent(BigDecimal.ZERO);
+        newStock.setSector("Technology");
+        newStock.setLastUpdated(LocalDateTime.now());
+
+        return stockRepository.save(newStock);
+    }
+
     public void updateAllStockPrices() {
         List<Stock> stocks = stockRepository.findAll();
         for (Stock stock : stocks) {

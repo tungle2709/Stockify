@@ -31,7 +31,24 @@
     </nav>
 
     <div class="container">
-        <h2 class="mb-4">Available Stocks</h2>
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2>Available Stocks</h2>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" id="stockSearch" class="form-control" 
+                           placeholder="Add stock (e.g., GOOGL, META)">
+                    <button class="btn btn-primary" onclick="addStock()">Add Stock</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="searchResult" class="mb-4" style="display: none;">
+            <div class="alert alert-success">
+                <strong>Stock Added!</strong> <span id="addedStock"></span> has been added to your watchlist.
+            </div>
+        </div>
         
         <div class="card">
             <div class="card-body">
@@ -71,5 +88,43 @@
     </div>
 
     <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <script>
+        function addStock() {
+            const symbol = document.getElementById('stockSearch').value.toUpperCase();
+            if (!symbol) return;
+
+            fetch(`/api/stocks/${symbol}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.symbol) {
+                        document.getElementById('addedStock').textContent = data.symbol;
+                        document.getElementById('searchResult').style.display = 'block';
+                        document.getElementById('stockSearch').value = '';
+                        
+                        // Refresh page after 2 seconds to show new stock
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        alert('Stock not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error adding stock');
+                });
+        }
+
+        // Enter key search
+        document.getElementById('stockSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addStock();
+        });
+
+        // Auto-refresh prices every 60 seconds
+        setInterval(() => {
+            fetch('/api/stocks/refresh', { method: 'POST' })
+                .then(() => window.location.reload());
+        }, 60000);
+    </script>
 </body>
 </html>

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/stocks")
@@ -22,9 +23,20 @@ public class StockApiController {
 
     @GetMapping("/{symbol}")
     public ResponseEntity<Stock> getStockBySymbol(@PathVariable String symbol) {
-        return stockService.getStockBySymbol(symbol)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Stock> stock = stockService.getStockBySymbol(symbol);
+        if (stock.isPresent()) {
+            // Update price for real-time data
+            stockService.updateStockPrice(symbol);
+            return ResponseEntity.ok(stockService.getStockBySymbol(symbol).get());
+        } else {
+            // Try to add new stock
+            Stock newStock = stockService.addStock(symbol);
+            if (newStock != null) {
+                return ResponseEntity.ok(newStock);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        }
     }
 
     @PostMapping("/refresh")

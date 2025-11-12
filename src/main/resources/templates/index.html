@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stockify - Stock Trading Platform</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}">
+    <style>
+        body { padding-top: 70px; }
+        .stock-card { transition: transform 0.2s; }
+        .stock-card:hover { transform: translateY(-2px); }
+        .price-up { color: #28a745; }
+        .price-down { color: #dc3545; }
+        .search-section { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 0; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">📈 Stockify</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/stocks">All Stocks</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/trading">Trading</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/portfolio">Portfolio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/transactions">Transactions</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="search-section">
+        <div class="container text-center">
+            <h1 class="mb-4">Find & Trade Stocks</h1>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="input-group mb-3">
+                        <input type="text" id="stockSearch" class="form-control form-control-lg" 
+                               placeholder="Enter stock symbol (e.g., AAPL, TSLA, GOOGL)">
+                        <button class="btn btn-light btn-lg" onclick="searchStock()">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div id="searchResult" class="mb-4" style="display: none;">
+            <div class="card stock-card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <h4 id="stockSymbol" class="mb-1"></h4>
+                            <p id="stockName" class="text-muted mb-0"></p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 id="stockPrice" class="mb-0"></h3>
+                            <small id="stockChange" class="text-muted"></small>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="input-group d-inline-flex w-auto">
+                                <input type="number" id="quantity" class="form-control" placeholder="Qty" min="1" value="1">
+                                <button class="btn btn-success" onclick="buyStock()">Buy</button>
+                                <button class="btn btn-danger" onclick="sellStock()">Sell</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Your Watchlist</h3>
+        <div id="watchlist" class="row">
+            <div th:each="stock : ${stocks}" class="col-md-4 mb-3">
+                <div class="card stock-card">
+                    <div class="card-body">
+                        <h5 th:text="${stock.symbol}" class="card-title"></h5>
+                        <p th:text="${stock.companyName}" class="text-muted small"></p>
+                        <h4 class="price-display" th:text="'$' + ${#numbers.formatDecimal(stock.currentPrice, 1, 2)}"></h4>
+                        <span th:class="${stock.changePercent >= 0} ? 'badge bg-success' : 'badge bg-danger'"
+                              th:text="${#numbers.formatDecimal(stock.changePercent, 1, 2)} + '%'"></span>
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-success" 
+                                    th:data-symbol="${stock.symbol}"
+                                    onclick="quickBuy(this.dataset.symbol)">Quick Buy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <script>
+        let currentStock = null;
+
+        function searchStock() {
+            const symbol = document.getElementById('stockSearch').value.toUpperCase();
+            if (!symbol) return;
+
+            fetch(`/api/stocks/${symbol}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.symbol) {
+                        currentStock = data;
+                        displayStock(data);
+                    } else {
+                        alert('Stock not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error searching stock');
+                });
+        }
+
+        function displayStock(stock) {
+            document.getElementById('stockSymbol').textContent = stock.symbol;
+            document.getElementById('stockName').textContent = stock.companyName;
+            document.getElementById('stockPrice').textContent = '$' + stock.currentPrice.toFixed(2);
+            
+            const changeElement = document.getElementById('stockChange');
+            const changePercent = stock.changePercent;
+            changeElement.textContent = (changePercent >= 0 ? '+' : '') + changePercent.toFixed(2) + '%';
+            changeElement.className = changePercent >= 0 ? 'text-success' : 'text-danger';
+            
+            document.getElementById('searchResult').style.display = 'block';
+        }
+
+        function buyStock() {
+            if (!currentStock) return;
+            const quantity = document.getElementById('quantity').value;
+            
+            fetch('/api/trading/buy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ symbol: currentStock.symbol, quantity: parseInt(quantity) })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.status === 'success') {
+                    document.getElementById('quantity').value = 1;
+                }
+            });
+        }
+
+        function sellStock() {
+            if (!currentStock) return;
+            const quantity = document.getElementById('quantity').value;
+            
+            fetch('/api/trading/sell', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ symbol: currentStock.symbol, quantity: parseInt(quantity) })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.status === 'success') {
+                    document.getElementById('quantity').value = 1;
+                }
+            });
+        }
+
+        function quickBuy(symbol) {
+            fetch('/api/trading/buy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ symbol: symbol, quantity: 1 })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message));
+        }
+
+        // Auto-refresh prices every 30 seconds
+        setInterval(() => {
+            if (currentStock) {
+                fetch(`/api/stocks/${currentStock.symbol}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.symbol) {
+                            currentStock = data;
+                            displayStock(data);
+                        }
+                    });
+            }
+        }, 30000);
+
+        // Enter key search
+        document.getElementById('stockSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchStock();
+        });
+    </script>
+</body>
+</html>
