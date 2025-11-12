@@ -10,4 +10,5 @@ import java.util.List;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     List<Transaction> findByStockSymbolOrderByTransactionDateDesc(String stockSymbol);
     List<Transaction> findAllByOrderByTransactionDateDesc();
+    List<Transaction> findTop10ByOrderByTransactionDateDesc();
 }
