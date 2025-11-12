@@ -1,17 +1,10 @@
 package com.stocktrading.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "account")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Account {
     
     @Id
@@ -29,6 +22,8 @@ public class Account {
     
     private BigDecimal gainLossPercentage;
     
+    public Account() {}
+    
     public Account(BigDecimal cashBalance) {
         this.cashBalance = cashBalance;
         this.totalInvested = BigDecimal.ZERO;
@@ -36,4 +31,17 @@ public class Account {
         this.totalGainLoss = BigDecimal.ZERO;
         this.gainLossPercentage = BigDecimal.ZERO;
     }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public BigDecimal getCashBalance() { return cashBalance; }
+    public void setCashBalance(BigDecimal cashBalance) { this.cashBalance = cashBalance; }
+    public BigDecimal getTotalInvested() { return totalInvested; }
+    public void setTotalInvested(BigDecimal totalInvested) { this.totalInvested = totalInvested; }
+    public BigDecimal getCurrentPortfolioValue() { return currentPortfolioValue; }
+    public void setCurrentPortfolioValue(BigDecimal currentPortfolioValue) { this.currentPortfolioValue = currentPortfolioValue; }
+    public BigDecimal getTotalGainLoss() { return totalGainLoss; }
+    public void setTotalGainLoss(BigDecimal totalGainLoss) { this.totalGainLoss = totalGainLoss; }
+    public BigDecimal getGainLossPercentage() { return gainLossPercentage; }
+    public void setGainLossPercentage(BigDecimal gainLossPercentage) { this.gainLossPercentage = gainLossPercentage; }
 }

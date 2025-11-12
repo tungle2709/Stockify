@@ -1,18 +1,11 @@
 package com.stocktrading.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "stocks")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Stock {
     
     @Id
@@ -36,6 +29,8 @@ public class Stock {
     
     private LocalDateTime lastUpdated;
     
+    public Stock() {}
+    
     public Stock(String symbol, String companyName, BigDecimal currentPrice, String sector) {
         this.symbol = symbol;
         this.companyName = companyName;
@@ -43,4 +38,21 @@ public class Stock {
         this.sector = sector;
         this.lastUpdated = LocalDateTime.now();
     }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getSymbol() { return symbol; }
+    public void setSymbol(String symbol) { this.symbol = symbol; }
+    public String getCompanyName() { return companyName; }
+    public void setCompanyName(String companyName) { this.companyName = companyName; }
+    public BigDecimal getCurrentPrice() { return currentPrice; }
+    public void setCurrentPrice(BigDecimal currentPrice) { this.currentPrice = currentPrice; }
+    public BigDecimal getPreviousClose() { return previousClose; }
+    public void setPreviousClose(BigDecimal previousClose) { this.previousClose = previousClose; }
+    public BigDecimal getChangePercent() { return changePercent; }
+    public void setChangePercent(BigDecimal changePercent) { this.changePercent = changePercent; }
+    public String getSector() { return sector; }
+    public void setSector(String sector) { this.sector = sector; }
+    public LocalDateTime getLastUpdated() { return lastUpdated; }
+    public void setLastUpdated(LocalDateTime lastUpdated) { this.lastUpdated = lastUpdated; }
 }

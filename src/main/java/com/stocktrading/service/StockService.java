@@ -18,7 +18,7 @@ public class StockService {
     private StockRepository stockRepository;
 
     @Autowired
-    private AlphaVantageService alphaVantageService;
+    private FinnhubService finnhubService;
 
     public List<Stock> getAllStocks() {
         return stockRepository.findAll();
@@ -36,7 +36,7 @@ public class StockService {
         Optional<Stock> stockOpt = stockRepository.findBySymbol(symbol);
         if (stockOpt.isPresent()) {
             Stock stock = stockOpt.get();
-            BigDecimal newPrice = alphaVantageService.getStockPrice(symbol);
+            BigDecimal newPrice = finnhubService.getCurrentPrice(symbol);
             if (newPrice != null) {
                 stock.setPreviousClose(stock.getCurrentPrice());
                 stock.setCurrentPrice(newPrice);
