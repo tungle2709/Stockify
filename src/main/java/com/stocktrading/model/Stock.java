@@ -55,4 +55,11 @@ public class Stock {
     public void setSector(String sector) { this.sector = sector; }
     public LocalDateTime getLastUpdated() { return lastUpdated; }
     public void setLastUpdated(LocalDateTime lastUpdated) { this.lastUpdated = lastUpdated; }
+    
+    public BigDecimal getDollarChange() {
+        if (currentPrice != null && previousClose != null) {
+            return currentPrice.subtract(previousClose);
+        }
+        return BigDecimal.ZERO;
+    }
 }

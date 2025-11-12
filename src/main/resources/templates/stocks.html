@@ -59,7 +59,7 @@
                             <th>Company Name</th>
                             <th>Sector</th>
                             <th>Current Price</th>
-                            <th>Change %</th>
+                            <th>Change ($/%)</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -72,8 +72,9 @@
                             <td>
                                 <span th:if="${stock.changePercent != null}" 
                                       th:classappend="${stock.changePercent >= 0} ? 'positive' : 'negative'">
-                                    <span th:text="${stock.changePercent >= 0} ? '+' : ''"></span>
-                                    <span th:text="${#numbers.formatDecimal(stock.changePercent, 1, 2)}"></span>%
+                                    <span th:text="${stock.dollarChange >= 0} ? '+' : ''"></span>
+                                    $<span th:text="${#numbers.formatDecimal(stock.dollarChange, 1, 2)}"></span>
+                                    (<span th:text="${stock.changePercent >= 0} ? '+' : ''"></span><span th:text="${#numbers.formatDecimal(stock.changePercent, 1, 2)}"></span>%)
                                 </span>
                                 <span th:if="${stock.changePercent == null}">-</span>
                             </td>
