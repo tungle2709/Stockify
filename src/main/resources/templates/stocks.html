@@ -127,15 +127,11 @@
                 fetch(`/api/stocks/${symbol}`, { method: 'DELETE' })
                     .then(response => {
                         if (response.ok) {
-                            alert(`${symbol} deleted successfully`);
                             window.location.reload();
-                        } else {
-                            alert('Error deleting stock');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        alert('Error deleting stock');
                     });
             }
         }
@@ -148,12 +144,10 @@
             fetch('/api/stocks/refresh', { method: 'POST' })
                 .then(response => response.text())
                 .then(data => {
-                    alert('Stock prices updated successfully!');
                     window.location.reload();
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Error refreshing prices');
                 })
                 .finally(() => {
                     button.disabled = false;
