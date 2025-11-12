@@ -142,11 +142,11 @@
             if (e.key === 'Enter') addStock();
         });
 
-        // Auto-refresh prices every 5 minutes
-        setInterval(() => {
-            fetch('/api/stocks/refresh', { method: 'POST' })
-                .then(() => window.location.reload());
-        }, 300000);
+        // Manual refresh only - auto-refresh disabled to reduce server load
+        // setInterval(() => {
+        //     fetch('/api/stocks/refresh', { method: 'POST' })
+        //         .then(() => window.location.reload());
+        // }, 300000);
     </script>
 </body>
 </html>

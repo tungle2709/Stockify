@@ -10,7 +10,8 @@ public class ScheduledStockUpdateService {
     @Autowired
     private StockService stockService;
 
-    @Scheduled(fixedRate = 300000) // Every 5 minutes instead of 1 minute
+    // Temporarily disabled to reduce memory usage
+    // @Scheduled(fixedRate = 300000) // Every 5 minutes
     public void updateStockPrices() {
         System.out.println("Updating stock prices automatically...");
         stockService.updateAllStockPrices();
