@@ -121,7 +121,7 @@
             if (e.key === 'Enter') addStock();
         });
 
-        // Auto-refresh prices every 60 seconds
+        // Auto-refresh prices every minute
         setInterval(() => {
             fetch('/api/stocks/refresh', { method: 'POST' })
                 .then(() => window.location.reload());

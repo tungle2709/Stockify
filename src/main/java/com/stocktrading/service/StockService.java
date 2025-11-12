@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -36,15 +37,20 @@ public class StockService {
         Optional<Stock> stockOpt = stockRepository.findBySymbol(symbol);
         if (stockOpt.isPresent()) {
             Stock stock = stockOpt.get();
-            BigDecimal newPrice = finnhubService.getCurrentPrice(symbol);
-            if (newPrice != null) {
-                stock.setPreviousClose(stock.getCurrentPrice());
-                stock.setCurrentPrice(newPrice);
-                if (stock.getPreviousClose() != null && stock.getPreviousClose().compareTo(BigDecimal.ZERO) > 0) {
-                    BigDecimal change = newPrice.subtract(stock.getPreviousClose());
-                    BigDecimal changePercent = change.divide(stock.getPreviousClose(), 4, RoundingMode.HALF_UP)
+            Map<String, BigDecimal> quote = finnhubService.getStockQuote(symbol);
+            if (quote != null && quote.containsKey("current")) {
+                BigDecimal currentPrice = quote.get("current");
+                BigDecimal previousClose = quote.get("previousClose");
+                
+                stock.setCurrentPrice(currentPrice);
+                if (previousClose != null && previousClose.compareTo(BigDecimal.ZERO) > 0) {
+                    stock.setPreviousClose(previousClose);
+                    BigDecimal change = currentPrice.subtract(previousClose);
+                    BigDecimal changePercent = change.divide(previousClose, 4, RoundingMode.HALF_UP)
                             .multiply(new BigDecimal("100"));
                     stock.setChangePercent(changePercent);
+                } else {
+                    stock.setChangePercent(BigDecimal.ZERO);
                 }
                 stock.setLastUpdated(LocalDateTime.now());
                 stockRepository.save(stock);
@@ -61,17 +67,29 @@ public class StockService {
         }
 
         // Create new stock with real-time data
-        BigDecimal currentPrice = finnhubService.getCurrentPrice(symbol);
-        if (currentPrice == null) {
+        Map<String, BigDecimal> quote = finnhubService.getStockQuote(symbol);
+        if (quote == null || !quote.containsKey("current")) {
             return null; // Stock not found
         }
+
+        BigDecimal currentPrice = quote.get("current");
+        BigDecimal previousClose = quote.get("previousClose");
 
         Stock newStock = new Stock();
         newStock.setSymbol(symbol);
         newStock.setCompanyName(symbol + " Inc."); // Simplified company name
         newStock.setCurrentPrice(currentPrice);
-        newStock.setPreviousClose(currentPrice);
-        newStock.setChangePercent(BigDecimal.ZERO);
+        newStock.setPreviousClose(previousClose != null ? previousClose : currentPrice);
+        
+        if (previousClose != null) {
+            BigDecimal change = currentPrice.subtract(previousClose);
+            BigDecimal changePercent = change.divide(previousClose, 4, RoundingMode.HALF_UP)
+                    .multiply(new BigDecimal("100"));
+            newStock.setChangePercent(changePercent);
+        } else {
+            newStock.setChangePercent(BigDecimal.ZERO);
+        }
+        
         newStock.setSector("Technology");
         newStock.setLastUpdated(LocalDateTime.now());
 

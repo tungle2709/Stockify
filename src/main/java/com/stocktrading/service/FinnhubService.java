@@ -31,4 +31,25 @@ public class FinnhubService {
         }
         return null;
     }
+
+    public Map<String, BigDecimal> getStockQuote(String symbol) {
+        try {
+            String url = apiUrl + "/quote?symbol=" + symbol + "&token=" + apiKey;
+            Map<String, Object> response = restTemplate.getForObject(url, Map.class);
+            
+            if (response != null) {
+                Map<String, BigDecimal> quote = new java.util.HashMap<>();
+                if (response.containsKey("c")) {
+                    quote.put("current", new BigDecimal(response.get("c").toString()));
+                }
+                if (response.containsKey("pc")) {
+                    quote.put("previousClose", new BigDecimal(response.get("pc").toString()));
+                }
+                return quote;
+            }
+        } catch (Exception e) {
+            System.err.println("Error fetching quote for " + symbol + ": " + e.getMessage());
+        }
+        return null;
+    }
 }
