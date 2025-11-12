@@ -55,17 +55,17 @@ A real-time stock trading application with live market data and comprehensive tr
                        │ Market Data      │
                        └──────────────────┘
 
-┌─────────────────────────────────────────────────────────────────┐
-│                        AWS VPC Network                          │
-│  ┌─────────────────┐              ┌─────────────────────────────┐│
-│  │   Public Subnet │              │      Private Subnet         ││
-│  │                 │              │                             ││
-│  │  EC2 Instance   │              │    RDS PostgreSQL           ││
-│  │  Security Group │              │    Security Group           ││
-│  │  - Port 22 SSH  │              │    - Port 5432 (from EC2)   ││
-│  │  - Port 5000    │              │                             ││
-│  └─────────────────┘              └─────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────┐
+│                        AWS VPC Network                            │
+│  ┌─────────────────┐              ┌─────────────────────────────┐ │
+│  │   Public Subnet │              │      Private Subnet         │ │
+│  │                 │              │                             │ │
+│  │  EC2 Instance   │              │    RDS PostgreSQL           │ │
+│  │  Security Group │              │    Security Group           │ │
+│  │  - Port 22 SSH  │              │    - Port 5432 (from EC2)   │ │
+│  │  - Port 5000    │              │                             │ │
+│  └─────────────────┘              └─────────────────────────────┘ │
+└───────────────────────────────────────────────────────────────────┘
 ```
 
 ## Features
