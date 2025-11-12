@@ -32,15 +32,18 @@
 
     <div class="container">
         <div class="row mb-4">
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <h2>Available Stocks</h2>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="input-group">
                     <input type="text" id="stockSearch" class="form-control" 
                            placeholder="Add stock (e.g., GOOGL, META)">
                     <button class="btn btn-primary" onclick="addStock()">Add Stock</button>
                 </div>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-success" onclick="refreshPrices()">Refresh Prices</button>
             </div>
         </div>
 
@@ -135,6 +138,27 @@
                         alert('Error deleting stock');
                     });
             }
+        }
+
+        function refreshPrices() {
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = 'Refreshing...';
+            
+            fetch('/api/stocks/refresh', { method: 'POST' })
+                .then(response => response.text())
+                .then(data => {
+                    alert('Stock prices updated successfully!');
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error refreshing prices');
+                })
+                .finally(() => {
+                    button.disabled = false;
+                    button.textContent = 'Refresh Prices';
+                });
         }
 
         // Enter key search
