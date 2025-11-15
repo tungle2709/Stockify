@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  stockify-app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/stockifydb
+      - SPRING_DATASOURCE_USERNAME=stockify
+      - SPRING_DATASOURCE_PASSWORD=stockify123
+    depends_on:
+      - postgres
+    networks:
+      - stockify-network
+
+  postgres:
+    image: postgres:17
+    environment:
+      - POSTGRES_DB=stockifydb
+      - POSTGRES_USER=stockify
+      - POSTGRES_PASSWORD=stockify123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - stockify-network
+
+volumes:
+  postgres_data:
+
+networks:
+  stockify-network:
+    driver: bridge

@@ -1,0 +1,13 @@
+target/classes
+target/test-classes
+target/maven-status
+target/generated-sources
+target/generated-test-sources
+.git
+.github
+.vscode
+*.md
+*.sh
+scripts/
+src/
+pom.xml
