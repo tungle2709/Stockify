@@ -69,33 +69,84 @@ mvn spring-boot:run
 
 ## Architecture
 
+```mermaid
+graph TB
+    A[Web Browser<br/>Bootstrap UI + JavaScript] --> B[Spring Boot Application<br/>Port 5000]
+    B --> C[PostgreSQL Database<br/>Amazon RDS Port 5432]
+    B --> D[Finnhub API<br/>Real-time Stock Data]
+    
+    subgraph "Frontend Pages"
+        E[Stock Watchlist]
+        F[Trading Interface]
+        G[Portfolio View]
+        H[Transaction History]
+        I[Profit/Loss Analysis]
+    end
+    
+    subgraph "Backend Services"
+        J[Stock Service]
+        K[Trading Service]
+        L[Portfolio Service]
+        M[Price Update Service]
+        N[Transaction Service]
+    end
+    
+    subgraph "AWS Infrastructure"
+        O[EC2 Instance<br/>t3.micro]
+        P[RDS PostgreSQL<br/>Private Subnet]
+        Q[VPC Network]
+        R[Security Groups]
+    end
+    
+    A --> E
+    A --> F
+    A --> G
+    A --> H
+    A --> I
+    
+    B --> J
+    B --> K
+    B --> L
+    B --> M
+    B --> N
+    
+    O --> B
+    P --> C
+    Q --> O
+    Q --> P
+    R --> O
+    R --> P
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Web Browser   │    │   Amazon EC2     │    │   Amazon RDS    │
-│                 │    │                  │    │                 │
-│  Bootstrap UI   │◄──►│  Spring Boot App │◄──►│  PostgreSQL DB  │
-│  JavaScript     │    │  (Port 5000)     │    │  (Port 5432)    │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                │
-                                ▼
-                       ┌──────────────────┐
-                       │   Finnhub API    │
-                       │                  │
-                       │ Real-time Stock  │
-                       │ Market Data      │
-                       └──────────────────┘
 
-┌───────────────────────────────────────────────────────────────────┐
-│                        AWS VPC Network                            │
-│  ┌─────────────────┐              ┌─────────────────────────────┐ │
-│  │   Public Subnet │              │      Private Subnet         │ │
-│  │                 │              │                             │ │
-│  │  EC2 Instance   │              │    RDS PostgreSQL           │ │
-│  │  Security Group │              │    Security Group           │ │
-│  │  - Port 22 SSH  │              │    - Port 5432 (from EC2)   │ │
-│  │  - Port 5000    │              │                             │ │
-│  └─────────────────┘              └─────────────────────────────┘ │
-└───────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    A[Angular Frontend<br/>Port 5000] --> B[Spring Boot API<br/>Port 8080]
+    B --> C[PostgreSQL Database<br/>Port 5432]
+    B --> D[Stock Price Service<br/>Real-time Updates]
+    
+    subgraph "Frontend Components"
+        E[Dashboard Component]
+        F[Trading Component]
+        G[Portfolio Component]
+        H[Chart Component]
+    end
+    
+    subgraph "Backend Services"
+        I[Stock Service]
+        J[Trading Service]
+        K[Portfolio Service]
+        L[Price Update Service]
+    end
+    
+    A --> E
+    A --> F
+    A --> G
+    A --> H
+    
+    B --> I
+    B --> J
+    B --> K
+    B --> L
 ```
 
 ## Features
