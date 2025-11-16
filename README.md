@@ -69,6 +69,35 @@ mvn spring-boot:run
 
 ## Architecture
 
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Web Browser   │    │   Amazon EC2     │    │   Amazon RDS    │
+│                 │    │                  │    │                 │
+│  Bootstrap UI   │◄──►│  Spring Boot App │◄──►│  PostgreSQL DB  │
+│  JavaScript     │    │  (Port 5000)     │    │  (Port 5432)    │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                │
+                                ▼
+                       ┌──────────────────┐
+                       │   Finnhub API    │
+                       │                  │
+                       │ Real-time Stock  │
+                       │ Market Data      │
+                       └──────────────────┘
+
+┌───────────────────────────────────────────────────────────────────┐
+│                        AWS VPC Network                            │
+│  ┌─────────────────┐              ┌─────────────────────────────┐ │
+│  │   Public Subnet │              │      Private Subnet         │ │
+│  │                 │              │                             │ │
+│  │  EC2 Instance   │              │    RDS PostgreSQL           │ │
+│  │  Security Group │              │    Security Group           │ │
+│  │  - Port 22 SSH  │              │    - Port 5432 (from EC2)   │ │
+│  │  - Port 5000    │              │                             │ │
+│  └─────────────────┘              └─────────────────────────────┘ │
+└───────────────────────────────────────────────────────────────────┘
+```
+
 ```mermaid
 graph TB
     A[Web Browser<br/>Bootstrap UI + JavaScript] --> B[Spring Boot Application<br/>Port 5000]
