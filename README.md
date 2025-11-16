@@ -147,36 +147,6 @@ graph TB
     R --> P
 ```
 
-```mermaid
-graph TB
-    A[Angular Frontend<br/>Port 5000] --> B[Spring Boot API<br/>Port 8080]
-    B --> C[PostgreSQL Database<br/>Port 5432]
-    B --> D[Stock Price Service<br/>Real-time Updates]
-    
-    subgraph "Frontend Components"
-        E[Dashboard Component]
-        F[Trading Component]
-        G[Portfolio Component]
-        H[Chart Component]
-    end
-    
-    subgraph "Backend Services"
-        I[Stock Service]
-        J[Trading Service]
-        K[Portfolio Service]
-        L[Price Update Service]
-    end
-    
-    A --> E
-    A --> F
-    A --> G
-    A --> H
-    
-    B --> I
-    B --> J
-    B --> K
-    B --> L
-```
 
 ## Features
 
